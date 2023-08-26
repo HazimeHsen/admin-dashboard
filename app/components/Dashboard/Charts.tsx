@@ -184,14 +184,17 @@ const ChartDemo = () => {
       id="charts"
       ref={chartsRef}
       className="max-w-full transition-all duration-300">
-      <div className={` ${useSidBar.isOpen ? "" : "lg:flex"} w-full`}>
+      <div className={` ${useSidBar.isOpen ? "" : "lg:flex"} w-full `}>
         <div
           className={`max-w-full  ${
             useSidBar.isOpen ? "w-full" : "lg:w-3/4"
           } `}>
           <div className="">
             <h5 className="text-lg font-bold my-5 uppercase">Sales</h5>
-            <Chart type="line" data={data.lineData}></Chart>
+            <Chart
+              className="max-h-[300px] flex justify-center"
+              type="line"
+              data={data.lineData}></Chart>
           </div>
         </div>
         <div
@@ -228,7 +231,10 @@ const ChartDemo = () => {
           <h5 className="text-lg font-bold my-5 uppercase">
             Comparison between last year and Current year sales
           </h5>
-          <Chart className="w-full" type="bar" data={data.barData}></Chart>
+          <Chart
+            className="max-h-[300px] flex justify-center"
+            type="bar"
+            data={data.barData}></Chart>
         </div>
       </div>
       <div className="my-10">

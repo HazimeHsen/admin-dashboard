@@ -6,7 +6,9 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineUser, AiOutlineStar } from "react-icons/ai";
 import { BiCategory } from "react-icons/bi";
 import { BsShop } from "react-icons/bs";
+import useSideBarModal from "@/app/hooks/useSideBar";
 const InfoCards = () => {
+  const useSideBar = useSideBarModal();
   const [userNb, setUserNb] = useState(0);
   const [productNb, setProductNb] = useState(0);
   const [orderNb, setOrderNb] = useState(0);
@@ -78,14 +80,16 @@ const InfoCards = () => {
   return (
     <div className="grid z-10">
       {isLoading ? (
-        <div className="-z-10 grid gap-4 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div
+          className={`-z-10 grid gap-4 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4`}>
           <LoadingCard />
           <LoadingCard />
           <LoadingCard />
           <LoadingCard />
         </div>
       ) : (
-        <div className="grid -z-10 gap-4 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div
+          className={`-z-10 grid gap-4 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4`}>
           <Card
             number={userNb}
             title="Users"

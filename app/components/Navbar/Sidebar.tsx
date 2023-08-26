@@ -1,34 +1,42 @@
 "use client";
+import useSideBarModal from "@/app/hooks/useSideBar";
 import Image from "next/image";
-import { useState } from "react";
 const Sidebar = () => {
-  const [open, setOpen] = useState(false);
+  const useSideBar = useSideBarModal();
+  const toggle = () => {
+    if (useSideBar.isOpen) {
+      useSideBar.onClose();
+    } else {
+      useSideBar.onOpen();
+    }
+  };
   const Menus = [
-    { title: "Dashboard", src: "/images/Chart_fill.png" },
+    { title: "Dashboard", src: "/images/Folder.png" },
     { title: "Inbox", src: "/images/Chat.png" },
     { title: "Accounts", src: "/images/User.png", gap: true },
     { title: "Schedule ", src: "/images/Calendar.png" },
     { title: "Search", src: "/images/Search.png" },
     { title: "Analytics", src: "/images/Chart.png" },
-    { title: "Files ", src: "/images/Folder.png", gap: true },
-    { title: "Setting", src: "/images/Setting.png" },
   ];
 
   return (
-    <div className="z-50">
+    <div
+      className={`z-50 duration-300 transition-all ${
+        useSideBar.isOpen ? "mr-72" : "mr-20"
+      }`}>
       <div className="md:flex hidden z-50">
         <div
           className={` ${
-            open ? "w-72" : "w-20 "
-          } bg-gray-700 z-50 h-screen p-5  pt-8 relative duration-300`}>
+            useSideBar.isOpen ? "w-72" : "w-20 "
+          } bg-gray-700 z-50 h-screen p-5 pt-8 fixed top-0 left-0 duration-300`}>
           <Image
             width={150}
             height={150}
             alt=""
             src="/images/control.png"
             className={`absolute cursor-pointer -right-3 top-9 w-7 border-dark-purple
-           border-2 rounded-full  ${!open && "rotate-180"}`}
-            onClick={() => setOpen(!open)}
+           border-2 rounded-full  ${!useSideBar.isOpen && "rotate-180"}`}
+            onClick={toggle}
           />
           <div className="flex gap-x-4 items-center">
             <Image
@@ -37,12 +45,12 @@ const Sidebar = () => {
               alt=""
               src="/images/logo.png"
               className={`cursor-pointer duration-500 ${
-                open && "rotate-[360deg]"
+                useSideBar.isOpen && "rotate-[360deg]"
               }`}
             />
             <h1
               className={`text-white origin-left font-medium text-xl duration-200 ${
-                !open && "scale-0"
+                !useSideBar.isOpen && "scale-0"
               }`}>
               Admin Panel
             </h1>
@@ -57,7 +65,9 @@ const Sidebar = () => {
                 } `}>
                 <img alt="" src={Menu.src} />
                 <span
-                  className={`${!open && "hidden"} origin-left duration-200`}>
+                  className={`${
+                    !useSideBar.isOpen && "hidden"
+                  } origin-left duration-200`}>
                   {Menu.title}
                 </span>
               </li>
@@ -71,19 +81,19 @@ const Sidebar = () => {
             alt=""
             src="/images/control.png"
             className={`absolute cursor-pointer top-4 left-4 w-7 border-dark-purple
-           border-2 rounded-full  ${!open && "rotate-180"}`}
-            onClick={() => setOpen(!open)}
+           border-2 rounded-full  ${!useSideBar.isOpen && "rotate-180"}`}
+            onClick={toggle}
           />
           <div
             className={` ${
-              open ? "left-0" : "-left-full"
-            } bg-gray-700 h-screen p-5  pt-8 w-[300px]  duration-300 absolute top-0 -left-full`}>
+              useSideBar.isOpen ? "left-0" : "-left-full"
+            } bg-gray-700 h-screen p-5  pt-8 w-[300px]  duration-300 fixed top-0 -left-full`}>
             <img
               alt=""
               src="/images/control.png"
               className={`absolute cursor-pointer -right-3 top-9 w-7 border-dark-purple
-           border-2 rounded-full  ${!open && "rotate-180"}`}
-              onClick={() => setOpen(!open)}
+           border-2 rounded-full  ${!useSideBar.isOpen && "rotate-180"}`}
+              onClick={toggle}
             />
             <div className="flex gap-x-4 items-center">
               <Image
@@ -92,12 +102,12 @@ const Sidebar = () => {
                 alt=""
                 src="/images/logo.png"
                 className={`cursor-pointer duration-500 ${
-                  open && "rotate-[360deg]"
+                  useSideBar.isOpen && "rotate-[360deg]"
                 }`}
               />
               <h1
                 className={`text-white origin-left font-medium text-xl duration-200 ${
-                  !open && "scale-0"
+                  !useSideBar.isOpen && "scale-0"
                 }`}>
                 Admin Panel
               </h1>
@@ -112,7 +122,9 @@ const Sidebar = () => {
                   } `}>
                   <img alt="" src={Menu.src} />
                   <span
-                    className={`${!open && "hidden"} origin-left duration-200`}>
+                    className={`${
+                      !useSideBar.isOpen && "hidden"
+                    } origin-left duration-200`}>
                     {Menu.title}
                   </span>
                 </li>

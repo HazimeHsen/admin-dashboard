@@ -1,51 +1,59 @@
 "use client";
 import { ChartData, ChartOptions } from "chart.js";
 import { Chart } from "primereact/chart";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { LayoutContext } from "@/layout/context/layoutcontext";
 import type { ChartDataState, ChartOptionsState } from "@/types/types";
 import axios from "axios";
 import { Order, Product } from "@/type";
 import { Separator } from "../ui/separator";
+import useSideBarModal from "@/app/hooks/useSideBar";
+import { debounce } from "lodash";
+
 const ChartDemo = () => {
-  const [options, setOptions] = useState<ChartOptionsState>({});
+  const useSidBar = useSideBarModal();
   const [data, setChartData] = useState<ChartDataState>({});
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [isFetched, setIsFetched] = useState<boolean>(false);
-  const [isFetched2, setIsFetched2] = useState<boolean>(false);
-  const { layoutConfig } = useContext(LayoutContext);
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
-  const getOrders = async () => {
-    try {
-      const response = await axios.get(`http://localhost:3000/api/orders`);
-      if (response.data) {
-        setOrders(response.data);
-        if (orders) {
-          setIsFetched(true);
-        }
+  const [chartsDimensions, setChartsDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
 
-        console.log(response.data);
-        console.log(orders);
-
-        return response.data;
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+  const chartsRef = useRef(null);
+  const handleResize = (entries: any) => {
+    for (const entry of entries) {
+      const { width, height } = entry.contentRect;
+      setChartsDimensions({ width, height });
     }
   };
-  const getProducts = async () => {
-    try {
-      const { data } = await axios.get("http://localhost:3000/api/product");
-      console.log(data);
-      if (data) {
-        setProducts(data);
-        setIsFetched2(true);
-      }
-    } catch (error) {
-      console.log(error);
+
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver(handleResize);
+    if (chartsRef.current) {
+      resizeObserver.observe(chartsRef.current);
     }
-  };
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   let categoryData: string[] = [];
   products.map((item) => {
@@ -55,30 +63,29 @@ const ChartDemo = () => {
   });
 
   useEffect(() => {
-    getProducts();
-    getOrders();
+    const fetchData = async () => {
+      try {
+        const [ordersResponse, productsResponse] = await Promise.all([
+          axios.get("http://localhost:3000/api/orders"),
+          axios.get("http://localhost:3000/api/product"),
+        ]);
 
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor =
-      documentStyle.getPropertyValue("--text-color") || "#495057";
-    const textColorSecondary =
-      documentStyle.getPropertyValue("--text-color-secondary") || "#6c757d";
-    const surfaceBorder =
-      documentStyle.getPropertyValue("--surface-border") || "#dfe7ef";
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
+        setOrders(ordersResponse.data);
+
+        setProducts(productsResponse.data);
+        setIsFetched(true);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!isFetched || !chartsDimensions.width || !chartsDimensions.height) {
+      return;
+    }
 
     const generateBarDataForYear = (year: number, orders: Order[]) => {
       const barData = Array(12).fill(0); // Initialize an array with 12 zeros
@@ -104,58 +111,13 @@ const ChartDemo = () => {
       datasets: [
         {
           label: "This Year",
-          backgroundColor:
-            documentStyle.getPropertyValue("--primary-500") || "#6366f1",
-          borderColor:
-            documentStyle.getPropertyValue("--primary-500") || "#6366f1",
           data: currentBarData,
         },
         {
           label: "Last Year",
-          backgroundColor:
-            documentStyle.getPropertyValue("--primary-200") || "#bcbdf9",
-          borderColor:
-            documentStyle.getPropertyValue("--primary-200") || "#bcbdf9",
           data: pastBarData,
         },
       ],
-    };
-
-    const barOptions: ChartOptions = {
-      plugins: {
-        legend: {
-          labels: {
-            color: textColor,
-          },
-        },
-      },
-      scales: {
-        x: {
-          ticks: {
-            color: textColorSecondary,
-            font: {
-              weight: "500",
-            },
-          },
-          grid: {
-            display: false,
-          },
-          border: {
-            display: false,
-          },
-        },
-        y: {
-          ticks: {
-            color: textColorSecondary,
-          },
-          grid: {
-            color: surfaceBorder,
-          },
-          border: {
-            display: false,
-          },
-        },
-      },
     };
 
     let categoryData: string[] = [];
@@ -182,19 +144,9 @@ const ChartDemo = () => {
       datasets: [
         {
           data: categoryDataValue,
+          fill: true,
         },
       ],
-    };
-
-    const pieOptions: ChartOptions = {
-      plugins: {
-        legend: {
-          labels: {
-            usePointStyle: true,
-            color: textColor,
-          },
-        },
-      },
     };
 
     const data: number[] = [];
@@ -204,8 +156,8 @@ const ChartDemo = () => {
     }
 
     orders.forEach((order) => {
-      const orderMonth = new Date(order?.createdAt).getMonth(); // Assuming date property is present in the order object
-      data[orderMonth] += 1; // Increment the count for the corresponding month
+      const orderMonth = new Date(order?.createdAt).getMonth();
+      data[orderMonth] += 1;
     });
 
     const lineData: ChartData = {
@@ -215,96 +167,72 @@ const ChartDemo = () => {
           label: "Sales",
           data: data,
           fill: false,
-          backgroundColor:
-            documentStyle.getPropertyValue("--primary-500") || "#6366f1",
-          borderColor:
-            documentStyle.getPropertyValue("--primary-500") || "#6366f1",
           tension: 0.4,
         },
       ],
     };
 
-    const lineOptions: ChartOptions = {
-      plugins: {
-        legend: {
-          labels: {
-            color: textColor,
-          },
-        },
-      },
-      scales: {
-        x: {
-          ticks: {
-            color: textColorSecondary,
-          },
-          grid: {
-            color: surfaceBorder,
-          },
-          border: {
-            display: false,
-          },
-        },
-        y: {
-          ticks: {
-            color: textColorSecondary,
-          },
-          grid: {
-            color: surfaceBorder,
-          },
-          border: {
-            display: false,
-          },
-        },
-      },
-    };
-
-    setOptions({
-      barOptions,
-      pieOptions,
-      lineOptions,
-    });
     setChartData({
       barData,
       pieData,
       lineData,
     });
-  }, [layoutConfig, isFetched, isFetched2]);
+  }, [isFetched, chartsDimensions]);
 
   return (
-    <div className="grid p-fluid">
-      <div className="col-12 xl:col-6">
-        <div className="card">
-          <h5>Linear Chart</h5>
-          <Chart
-            type="line"
-            data={data.lineData}
-            options={options.lineOptions}></Chart>
+    <div
+      id="charts"
+      ref={chartsRef}
+      className="max-w-full transition-all duration-300">
+      <div className={` ${useSidBar.isOpen ? "" : "lg:flex"} w-full`}>
+        <div
+          className={`max-w-full  ${
+            useSidBar.isOpen ? "w-full" : "lg:w-3/4"
+          } `}>
+          <div className="">
+            <h5 className="text-lg font-bold my-5 uppercase">Sales</h5>
+            <Chart type="line" data={data.lineData}></Chart>
+          </div>
+        </div>
+        <div
+          className={`mx-5 ${useSidBar.isOpen ? "hidden" : "lg:block"} hidden`}>
+          <Separator className="" orientation="vertical" />
+        </div>
+        <div
+          className={`my-10  ${
+            useSidBar.isOpen ? "block" : "lg:hidden"
+          } block `}>
+          <Separator className="" />
+        </div>
+        <div
+          className={`lg:max-w-full  ${
+            useSidBar.isOpen ? "lg:w-full" : "lg:w-1/4"
+          } `}>
+          <h5 className="text-lg font-bold my-5 uppercase">Categories</h5>
+          <div
+            className={`flex justify-center  ${
+              useSidBar.isOpen ? "" : "lg:mt-14"
+            }  h-full`}>
+            <Chart
+              className="max-w-[200px]"
+              type="doughnut"
+              data={data.pieData}></Chart>
+          </div>
         </div>
       </div>
       <div className="my-10">
         <Separator />
       </div>
-      <div className="col-12 xl:col-6">
-        <div className="card">
-          <h5>Bar Chart</h5>
-          <Chart
-            type="bar"
-            data={data.barData}
-            options={options.barOptions}></Chart>
+      <div className={`max-w-full ${useSidBar.isOpen ? "w-full" : "w-full"}`}>
+        <div className="">
+          <h5 className="text-lg font-bold my-5 uppercase">
+            Comparison between last year and Current year sales
+          </h5>
+          <Chart className="w-full" type="bar" data={data.barData}></Chart>
         </div>
       </div>
       <div className="my-10">
         <Separator />
-      </div>
-
-      <div className="">
-        <div className="card flex flex-col items-center">
-          <h5 className="text-left w-full">Doughnut Chart</h5>
-          <Chart
-            type="doughnut"
-            data={data.pieData}
-            options={options.pieOptions}></Chart>
-        </div>
       </div>
     </div>
   );

@@ -14,12 +14,12 @@ export const LayoutProvider = ({ children }: ChildContainerProps) => {
     });
 
     const [layoutState, setLayoutState] = useState<LayoutState>({
-        staticMenuDesktopInactive: false,
-        overlayMenuActive: false,
-        profileSidebarVisible: false,
-        configSidebarVisible: false,
-        staticMenuMobileActive: false,
-        menuHoverActive: false
+      staticMenuDesktopInactive: false,
+      overlayMenuActive: false,
+      profileSidebarVisible: true,
+      configSidebarVisible: false,
+      staticMenuMobileActive: false,
+      menuHoverActive: false,
     });
 
     const onMenuToggle = () => {

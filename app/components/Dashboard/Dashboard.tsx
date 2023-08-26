@@ -5,14 +5,14 @@ import ChartDemo from "./Charts";
 
 const Dashboard = () => {
   return (
-    <div className="px-4 z-20 py-6">
+    <div className="px-4 w-full z-20 py-6">
       <div>
         <InfoCards />
       </div>
       <div className="my-10">
         <Separator />
       </div>
-      <div>
+      <div className="w-full">
         <ChartDemo />
       </div>
     </div>

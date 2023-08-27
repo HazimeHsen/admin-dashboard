@@ -69,9 +69,7 @@ function DataTable({ data }: { data: User[] }) {
                   </tr>
                 ))}
             </tbody>
-          ) : (
-            <div className="text-center text-lg font-semibold">No Data</div>
-          )}
+          ) : null}
         </table>
       </div>
     </div>

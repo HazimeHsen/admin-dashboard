@@ -6,6 +6,8 @@ import { User } from "@/type";
 function DataTable({ data }: { data: User[] }) {
   const tableRef = useRef(null);
 
+  console.log(data);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const $ = require("jquery");
@@ -40,36 +42,34 @@ function DataTable({ data }: { data: User[] }) {
               <th data-priority="4">Joined</th>
             </tr>
           </thead>
-          {data ? (
-            <tbody>
-              {data &&
-                data.map((d, i) => (
-                  <tr key={i}>
-                    <td className="!py-[10px] !px-[18px] ">
-                      {" "}
-                      <Image
-                        src={d?.image ?? "/images/placeholder.jpg"}
-                        alt=""
-                        width={40}
-                        height={40}
-                        className="rounded-full"
-                      />
-                    </td>
-                    <td className="!py-[10px] !px-[18px] ">
-                      {" "}
-                      <div>{d.name}</div>
-                    </td>
-                    <td className="!py-[10px] !px-[18px]">
-                      {" "}
-                      <div>{d.email}</div>
-                    </td>
-                    <td className="!py-[10px] !px-[18px]">
-                      <div>{d.createdAt}</div>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          ) : null}
+          <tbody>
+            {data &&
+              data.map((d, i) => (
+                <tr key={i}>
+                  <td className="!py-[10px] !px-[18px] ">
+                    {" "}
+                    <Image
+                      src={d?.image ?? "/images/placeholder.jpg"}
+                      alt=""
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                    />
+                  </td>
+                  <td className="!py-[10px] !px-[18px] ">
+                    {" "}
+                    <div>{d.name}</div>
+                  </td>
+                  <td className="!py-[10px] !px-[18px]">
+                    {" "}
+                    <div>{d.email}</div>
+                  </td>
+                  <td className="!py-[10px] !px-[18px]">
+                    <div>{d.createdAt}</div>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
         </table>
       </div>
     </div>

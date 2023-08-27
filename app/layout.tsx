@@ -17,6 +17,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link
+          href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"
+          rel="stylesheet"
+        />
+        <link
+          href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css"
+          rel="stylesheet"
+        />
+      </head>
       <body className="md:flex">
         <Sidebar />
         <div className="w-full z-20">{children}</div>

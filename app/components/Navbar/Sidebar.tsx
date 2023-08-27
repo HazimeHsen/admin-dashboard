@@ -1,6 +1,7 @@
 "use client";
 import useSideBarModal from "@/app/hooks/useSideBar";
 import Image from "next/image";
+import Link from "next/link";
 const Sidebar = () => {
   const useSideBar = useSideBarModal();
   const toggle = () => {
@@ -11,12 +12,12 @@ const Sidebar = () => {
     }
   };
   const Menus = [
-    { title: "Dashboard", src: "/images/Folder.png" },
-    { title: "Inbox", src: "/images/Chat.png" },
-    { title: "Accounts", src: "/images/User.png", gap: true },
-    { title: "Schedule ", src: "/images/Calendar.png" },
-    { title: "Search", src: "/images/Search.png" },
-    { title: "Analytics", src: "/images/Chart.png" },
+    { title: "Dashboard", src: "/images/Folder.png", href: "/" },
+    { title: "Users", src: "/images/User.png", href: "/users", gap: true },
+    { title: "Products", src: "/images/Chat.png", href: "/products" },
+    { title: "Schedule ", src: "/images/Calendar.png", href: "/" },
+    { title: "Search", src: "/images/Search.png", href: "/" },
+    { title: "Analytics", src: "/images/Chart.png", href: "/" },
   ];
 
   return (
@@ -57,19 +58,21 @@ const Sidebar = () => {
           </div>
           <ul className="pt-6">
             {Menus.map((Menu, index) => (
-              <li
-                key={index}
-                className={`flex p-2 cursor-pointer hover:bg-light-white text-white hover:bg-gray-500 rounded-lg text-sm items-center gap-x-4 
+              <li key={index}>
+                <Link
+                  className={`flex p-2 cursor-pointer hover:bg-light-white text-white hover:bg-gray-500 rounded-lg text-sm items-center gap-x-4 
               ${Menu.gap ? "mt-9" : "mt-2"} ${
-                  index === 0 && "bg-light-white"
-                } `}>
-                <img alt="" src={Menu.src} />
-                <span
-                  className={`${
-                    !useSideBar.isOpen && "hidden"
-                  } origin-left duration-200`}>
-                  {Menu.title}
-                </span>
+                    index === 0 && "bg-light-white"
+                  } `}
+                  href={Menu.href}>
+                  <img alt="" src={Menu.src} />
+                  <span
+                    className={`${
+                      !useSideBar.isOpen && "hidden"
+                    } origin-left duration-200`}>
+                    {Menu.title}
+                  </span>
+                </Link>
               </li>
             ))}
           </ul>

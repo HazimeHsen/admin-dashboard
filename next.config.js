@@ -1,5 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    serverActions: true,
+  },
+  images: {
+    domains: ["lh3.googleusercontent.com"], // Add any other domains as needed
+  },
   async headers() {
     return [
       {

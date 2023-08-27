@@ -1,21 +1,30 @@
+"use client";
 import Table from "@/app/components/Table/Table";
 import axios from "axios";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ClientOnly from "@/app/components/ClientOnly";
-const page = async () => {
-  const getUsers = async () => {
-    try {
-      const response = await axios.get(`http://localhost:3000/api/users`);
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-  const data = await getUsers();
-  console.log(data);
+const page = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get(`http://localhost:3000/api/users`);
+        if (response.data) {
+          setData(response.data);
+        }
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+        console.error("Error fetching data:", error);
+      }
+    };
+    getUsers();
+  }, []);
   return (
     <ClientOnly>
-      <Table data={data} />
+      <Table Loading={isLoading} data={data} />
     </ClientOnly>
   );
 };

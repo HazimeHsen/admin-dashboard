@@ -12,6 +12,7 @@ const page = async () => {
     }
   };
   const data = await getUsers();
+  console.log(data);
   return (
     <ClientOnly>
       <Table data={data} />

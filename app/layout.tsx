@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Sidebar from "./components/Navbar/Sidebar";
+import ToasterProvider from "./provider/ToasterProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,6 +30,7 @@ export default function RootLayout({
       </head>
       <body className="md:flex">
         <Sidebar />
+        <ToasterProvider />
         <div className="w-full z-20">{children}</div>
       </body>
     </html>

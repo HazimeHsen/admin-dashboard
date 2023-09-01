@@ -1,9 +1,16 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import Image from "next/image";
-import { User } from "@/type";
+import { Product } from "@/type";
 import useSideBarModal from "@/app/hooks/useSideBar";
-function DataTable({ data, Loading }: { data: User[]; Loading: boolean }) {
+
+function ProductsTable({
+  data,
+  Loading,
+}: {
+  data: Product[];
+  Loading: boolean;
+}) {
   const tableRef = useRef(null);
   const useSideBar = useSideBarModal();
   console.log(data);
@@ -59,36 +66,29 @@ function DataTable({ data, Loading }: { data: User[]; Loading: boolean }) {
             ref={tableRef}>
             <thead>
               <tr>
-                <th data-priority="1">Profile</th>
-                <th data-priority="2">Name</th>
-                <th data-priority="3">Email</th>
-                <th data-priority="4">Joined</th>
+                <th data-priority="1">Name</th>
+                <th data-priority="2">Category</th>
+                <th data-priority="3">Count In Stock</th>
+                <th data-priority="4">Price</th>
               </tr>
             </thead>
             <tbody>
               {data &&
                 data.map((d, i) => (
                   <tr key={i}>
-                    <td className="!py-[10px] !px-[18px] ">
-                      {" "}
-                      <Image
-                        src={d?.image ?? "/images/placeholder.jpg"}
-                        alt=""
-                        width={40}
-                        height={40}
-                        className="rounded-full"
-                      />
-                    </td>
-                    <td className="!py-[10px] !px-[18px] ">
-                      {" "}
+                    <td className="text-center !py-[10px] !px-[18px] ">
                       <div>{d.name}</div>
                     </td>
-                    <td className="!py-[10px] !px-[18px]">
+                    <td className="text-center !py-[10px] !px-[18px] ">
                       {" "}
-                      <div>{d.email}</div>
+                      <div>{d.category}</div>
                     </td>
-                    <td className="!py-[10px] !px-[18px]">
-                      <div>{d.createdAt}</div>
+                    <td className="text-center !py-[10px] !px-[18px]">
+                      {" "}
+                      <div>{d.countInStock}</div>
+                    </td>
+                    <td className="text-center !py-[10px] !px-[18px]">
+                      <div>{d.price}</div>
                     </td>
                   </tr>
                 ))}
@@ -100,4 +100,4 @@ function DataTable({ data, Loading }: { data: User[]; Loading: boolean }) {
   );
 }
 
-export default DataTable;
+export default ProductsTable;

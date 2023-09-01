@@ -4,7 +4,7 @@ const nextConfig = {
     serverActions: true,
   },
   images: {
-    domains: ["lh3.googleusercontent.com"], // Add any other domains as needed
+    domains: ["lh3.googleusercontent.com"],
   },
   async headers() {
     return [

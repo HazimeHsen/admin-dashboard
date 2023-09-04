@@ -8,8 +8,6 @@ import { AiTwotoneDelete } from "react-icons/ai";
 import Modal from "@/app/components/Modal/UserModal";
 import useDeleteModal from "@/app/hooks/deleteModal";
 import useModal from "@/app/hooks/useModal";
-import axios from "axios";
-import { toast } from "react-hot-toast";
 import LoadingSvg from "@/app/components/Loading/Loading";
 
 function DataTable({
@@ -23,7 +21,6 @@ function DataTable({
   isChanged: boolean;
   setIsChanged: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const [isLoading, setIsLoading] = useState(false);
   const tableRef = useRef(null);
   const useUserModal = useModal();
   const useDelete = useDeleteModal();
@@ -46,27 +43,6 @@ function DataTable({
       };
     }
   }, [Loading, isChanged]);
-
-  const userEdit = (id: string) => {
-    useUserModal.onClose();
-  };
-  const userDelete = async (id: string) => {
-    try {
-      setIsLoading(true);
-      const response = await axios.delete(
-        `http://localhost:3000/api/users?id=${id}`
-      );
-      if (response.data) {
-        setIsChanged(!isChanged);
-        setIsLoading(false);
-        toast.success(response.data.message);
-        useDelete.onClose();
-      }
-    } catch (error) {
-      setIsLoading(false);
-      console.log(error);
-    }
-  };
 
   const toggle1 = () => {
     if (useUserModal.isOpen) {
@@ -120,47 +96,49 @@ function DataTable({
               {data &&
                 data.map((d, i) => (
                   <tr key={i}>
-                    <td className="!py-[10px] !px-[18px] ">
+                    <td className="text-center">
                       {" "}
                       <Image
                         src={d?.image ?? "/images/placeholder.jpg"}
-                        alt=""
+                        alt="no image"
                         width={40}
                         height={40}
-                        className="rounded-full"
+                        className="col-span-3 my-5 rounded-full w-[50px] h-[50px] object-contain"
                       />
                     </td>
-                    <td className="!py-[10px] !px-[18px] ">
+                    <td className="text-center">
                       {" "}
                       <div>{d.name}</div>
                     </td>
-                    <td className="!py-[10px] !px-[18px]">
+                    <td className="text-center">
                       {" "}
                       <div>{d.email}</div>
                     </td>
-                    <td className="!py-[10px] !px-[18px]">
+                    <td className="text-center">
                       <div>{d.createdAt}</div>
                     </td>
-                    <td className="!py-[10px] !px-[18px]">
+                    <td className="text-center">
                       <div className="flex items-center justify-center">
                         <div className="mr-2 cursor-pointer">
                           <Modal
-                            loading={isLoading}
+                            data={d}
+                            isChanged={isChanged}
+                            setIsChanged={setIsChanged}
                             ToDelete={false}
                             id={d.id}
                             isOpen={useUserModal.isOpen}
                             setIsOpen={toggle1}
-                            onsubmit={userEdit}
                             icon={BiEdit}
                             title="Edit User"
                           />
                         </div>
                         <div className="mr-2 cursor-pointer">
                           <Modal
-                            loading={isLoading}
+                            data={d}
+                            isChanged={isChanged}
+                            setIsChanged={setIsChanged}
                             id={d.id}
                             ToDelete
-                            onsubmit={userDelete}
                             isOpen={useDelete.isOpen}
                             setIsOpen={toggle2}
                             icon={AiTwotoneDelete}

@@ -130,6 +130,7 @@ function DataTable({
                             setIsOpen={toggle1}
                             icon={BiEdit}
                             title="Edit User"
+                            iconInfo="text-black"
                           />
                         </div>
                         <div className="mr-2 cursor-pointer">
@@ -142,6 +143,7 @@ function DataTable({
                             isOpen={useDelete.isOpen}
                             setIsOpen={toggle2}
                             icon={AiTwotoneDelete}
+                            iconInfo={"text-red-600 hover:text-red-800"}
                             title="Delete User"
                           />
                         </div>

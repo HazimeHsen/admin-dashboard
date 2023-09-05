@@ -255,3 +255,27 @@ table.dataTable.dtr-inline.collapsed>tbody>tr>th:first-child:before {
   background-color: #667eea !important;
   /*bg-indigo-500*/
 }
+
+
+.custom-sidebar-style {
+
+  overflow-y: scroll; /* Add scroll if content overflows */
+  scrollbar-width: thin; /* Adjust the width of the scrollbar */
+  scrollbar-color: #888 #f0f0f0; /* Adjust the colors of the scrollbar thumb and track */
+}
+
+.custom-sidebar-style::-webkit-scrollbar {
+  width: 8px; /* Adjust the width of the scrollbar */
+}
+
+.custom-sidebar-style::-webkit-scrollbar-thumb {
+  background-color: #888; /* Adjust the color of the scrollbar thumb */
+}
+
+.custom-sidebar-style::-webkit-scrollbar-track {
+  background-color: #f0f0f0; /* Adjust the color of the scrollbar track */
+}
+
+
+
+

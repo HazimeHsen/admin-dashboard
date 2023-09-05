@@ -10,29 +10,39 @@ import { Button } from "../ui/button";
 
 export default function Modal({
   body,
-  ToDelete,
   isOpen,
   setIsOpen,
   title,
   icon: IconComponent,
+  iconInfo,
+  buttonTitle,
+  variant,
 }: {
   body?: React.ReactElement;
-  ToDelete: boolean;
+  buttonTitle?: string;
   isOpen: boolean;
   setIsOpen: () => void;
   title: string;
-  icon: IconType;
+  icon?: IconType | undefined;
+  iconInfo?: string;
+  variant?:
+    | "link"
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | null
+    | undefined;
 }) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button
-          className={`${ToDelete ? "text-red-600 hover:text-red-800" : ""}`}
-          variant="ghost">
-          <IconComponent size={25} />
+        <Button className={`${iconInfo}`} variant={variant ?? "ghost"}>
+          {buttonTitle ?? (IconComponent && <IconComponent size={25} />)}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="custom-sidebar-style max-h-[500px] sm:max-w-[425px]">
         <DialogTitle>{title}</DialogTitle>
         {body}
       </DialogContent>

@@ -31,6 +31,7 @@ export default function ProductModal({
   isOpen,
   setIsOpen,
   icon: IconComponent,
+  iconInfo,
 }: {
   data: Product;
   isChanged: boolean;
@@ -41,6 +42,7 @@ export default function ProductModal({
   setIsOpen: () => void;
   title: string;
   icon: IconType;
+  iconInfo: string;
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [images, setImages] = useState(data.images ?? []); // Initialize with existing images
@@ -288,8 +290,8 @@ export default function ProductModal({
     <div>
       {ToDelete ? (
         <Modal
-          ToDelete={ToDelete}
           icon={IconComponent}
+          iconInfo={iconInfo}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           title={title}
@@ -297,8 +299,8 @@ export default function ProductModal({
         />
       ) : (
         <Modal
-          ToDelete={ToDelete}
           icon={IconComponent}
+          iconInfo={iconInfo}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           title={title}

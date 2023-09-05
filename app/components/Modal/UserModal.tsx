@@ -26,6 +26,7 @@ export default function UserModal({
   id,
   ToDelete,
   isOpen,
+  iconInfo,
   setIsOpen,
   icon: IconComponent,
 }: {
@@ -38,6 +39,7 @@ export default function UserModal({
   setIsOpen: () => void;
   title: string;
   icon: IconType;
+  iconInfo: string;
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(data.image ?? "/images/placeholder.jpg");
@@ -218,8 +220,8 @@ export default function UserModal({
     <div>
       {ToDelete ? (
         <Modal
-          ToDelete={ToDelete}
           icon={IconComponent}
+          iconInfo={iconInfo}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           title={title}
@@ -227,11 +229,11 @@ export default function UserModal({
         />
       ) : (
         <Modal
-          ToDelete={ToDelete}
           icon={IconComponent}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           title={title}
+          iconInfo={iconInfo}
           body={editBody}
         />
       )}

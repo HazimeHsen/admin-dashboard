@@ -13,7 +13,6 @@ import { Input } from "@/app/components/ui/input";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import useCreateModal from "@/app/hooks/CreateModal";
-import { BASE_URL } from "@/app/url";
 interface FormData {
   name: string;
   email: string;
@@ -82,25 +81,27 @@ const page = () => {
             });
             if (!res.ok) throw new Error(await res.text());
             const responseData = await res.json();
+            const projectDir = responseData.projectDir;
+            console.log("projectDir", projectDir);
+            console.log("responseData.path", responseData.path);
 
             const pathParts = responseData.path.split("\\");
 
             const filename = pathParts[pathParts.length - 1];
 
-            const newPath = `${BASE_URL}/images/${filename}`;
+            const newPath = `http://localhost:3001/images/${filename}`;
 
             return newPath;
           } else {
             return "/images/placeholder.jpg";
           }
         };
-        const response = await axios.post(`${BASE_URL}/api/users`, {
+        const response = await axios.post(`http://localhost:3000/api/users`, {
           name: data.name,
           email: data.email,
           password: data.password,
           image: await getImage(),
         });
-
         if (response.data) {
           setIsChanged(!isChanged);
           setCreateLoading(false);

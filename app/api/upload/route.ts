@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
   try {
     await writeFile(relativePath, buffer);
     console.log(`Uploaded file saved at: ${relativePath}`);
-    return NextResponse.json({ success: true, path: relativePath, projectDir });
+    return NextResponse.json({ success: true, path: relativePath });
   } catch (error) {
     console.error("Error saving the file:", error);
     return NextResponse.json({ success: false, error: "File upload failed" });

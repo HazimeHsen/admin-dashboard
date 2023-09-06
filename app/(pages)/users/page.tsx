@@ -81,11 +81,11 @@ const page = () => {
             });
             if (!res.ok) throw new Error(await res.text());
             const responseData = await res.json();
-            const projectDir = responseData.projectDir;
-            console.log("projectDir", projectDir);
+
             console.log("responseData.path", responseData.path);
 
             const pathParts = responseData.path;
+            console.log("pathParts", pathParts);
 
 
             return pathParts;

@@ -85,13 +85,10 @@ const page = () => {
             console.log("projectDir", projectDir);
             console.log("responseData.path", responseData.path);
 
-            const pathParts = responseData.path.split("\\");
+            const pathParts = responseData.path;
 
-            const filename = pathParts[pathParts.length - 1];
 
-            const newPath = `http://localhost:3001/images/${filename}`;
-
-            return newPath;
+            return pathParts;
           } else {
             return "/images/placeholder.jpg";
           }

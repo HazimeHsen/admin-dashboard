@@ -20,14 +20,13 @@ export async function POST(request: NextRequest) {
 
   const projectDir = process.cwd();
 
-  const relativePath = "/public/images/" + newFilename;
-
-  const fullPath = path.join(projectDir, relativePath);
+  const relativePath =
+    "https://admin-dashboard-cyan-two.vercel.app/images/" + newFilename;
 
   try {
-    await writeFile(fullPath, buffer);
-    console.log(`Uploaded file saved at: ${fullPath}`);
-    return NextResponse.json({ success: true, path: fullPath, projectDir });
+    await writeFile(relativePath, buffer);
+    console.log(`Uploaded file saved at: ${relativePath}`);
+    return NextResponse.json({ success: true, path: relativePath, projectDir });
   } catch (error) {
     console.error("Error saving the file:", error);
     return NextResponse.json({ success: false, error: "File upload failed" });

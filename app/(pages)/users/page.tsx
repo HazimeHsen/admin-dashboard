@@ -82,17 +82,12 @@ const page = () => {
             if (!res.ok) throw new Error(await res.text());
             const responseData = await res.json();
 
-            console.log("responseData.path", responseData.path);
-
-            const pathParts = responseData.path;
-            console.log("pathParts", pathParts);
-
-
-            return pathParts;
+            return responseData.imageUrl;
           } else {
             return "/images/placeholder.jpg";
           }
         };
+        
         const response = await axios.post(`http://localhost:3000/api/users`, {
           name: data.name,
           email: data.email,

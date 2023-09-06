@@ -25,14 +25,6 @@ const page = () => {
   const [createLoading, setCreateLoading] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const [data, setData] = useState([]);
-  const [image, setImage] = useState("/images/placeholder.jpg");
-  const [file, setFile] = useState<File>();
-  const createModal = useCreateModal();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>();
 
   useEffect(() => {
     const getUsers = async () => {
@@ -51,6 +43,16 @@ const page = () => {
     getUsers();
   }, [isChanged]);
 
+  const [image, setImage] = useState("/images/placeholder.jpg");
+  const [savedImage, setSavedImage] = useState("/images/placeholder.jpg");
+  const [file, setFile] = useState<File>();
+  const createModal = useCreateModal();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
@@ -68,34 +70,34 @@ const page = () => {
       try {
         setCreateLoading(true);
 
-        if (file) {
-          const imageData = new FormData();
-          imageData.set("file", file);
+        const getImage = async () => {
+          if (file) {
+            const imageData = new FormData();
+            imageData.set("file", file);
 
-          const res = await fetch("/api/upload", {
-            method: "POST",
-            body: imageData,
-          });
-          if (!res.ok) throw new Error(await res.text());
-          const responseData = await res.json();
-          const path = responseData.path;
-          console.log(path);
-          const pathParts = responseData.path.split("\\");
-          console.log(pathParts);
+            const res = await fetch("/api/upload", {
+              method: "POST",
+              body: imageData,
+            });
+            if (!res.ok) throw new Error(await res.text());
+            const responseData = await res.json();
 
-          const filename = pathParts[pathParts.length - 1];
-          console.log(filename);
+            const pathParts = responseData.path.split("\\");
 
-          const newPath = `https://admin-dashboard-cyan-two.vercel.app/images/${filename}`;
+            const filename = pathParts[pathParts.length - 1];
 
-          setImage(path);
-          console.log(image);
-        }
+            const newPath = `http://localhost:3001/images/${filename}`;
+
+            return newPath;
+          } else {
+            return "/images/placeholder.jpg";
+          }
+        };
         const response = await axios.post(`http://localhost:3000/api/users`, {
           name: data.name,
           email: data.email,
           password: data.password,
-          image: image,
+          image: await getImage(),
         });
         if (response.data) {
           setIsChanged(!isChanged);

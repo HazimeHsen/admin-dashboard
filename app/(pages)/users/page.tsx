@@ -13,6 +13,7 @@ import { Input } from "@/app/components/ui/input";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import useCreateModal from "@/app/hooks/CreateModal";
+import { BASE_URL } from "@/app/url";
 interface FormData {
   name: string;
   email: string;
@@ -86,19 +87,20 @@ const page = () => {
 
             const filename = pathParts[pathParts.length - 1];
 
-            const newPath = `http://localhost:3001/images/${filename}`;
+            const newPath = `${BASE_URL}/images/${filename}`;
 
             return newPath;
           } else {
             return "/images/placeholder.jpg";
           }
         };
-        const response = await axios.post(`http://localhost:3000/api/users`, {
+        const response = await axios.post(`${BASE_URL}/api/users`, {
           name: data.name,
           email: data.email,
           password: data.password,
           image: await getImage(),
         });
+
         if (response.data) {
           setIsChanged(!isChanged);
           setCreateLoading(false);

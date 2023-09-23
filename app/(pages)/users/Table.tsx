@@ -60,7 +60,7 @@ function DataTable({
           alt="no image"
           width={40}
           height={40}
-          className="rounded-full flex justify-center items-center w-[30px] h-[30px] object-contain"
+          className="rounded-full w-[30px] h-[30px] object-contain"
         />
       ),
     },
@@ -137,7 +137,7 @@ function DataTable({
             className="h-full"
             pagination
             paginationPageSize={5}
-            rowHeight={50}
+            rowHeight={45}
           />
         </div>
       )}

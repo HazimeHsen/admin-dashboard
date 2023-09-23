@@ -124,7 +124,7 @@ function DataTable({
 
   return (
     <div
-      className={`container w-full mx-auto block h-[350px] px-2 transition-all duration-300 -z-10 `}>
+      className={` w-full mx-auto block h-[350px] px-2 transition-all duration-300 -z-10 `}>
       {Loading ? (
         <LoadingSvg />
       ) : (

@@ -19,121 +19,82 @@ const Sidebar = () => {
     useSideBar.isOpen ? useSideBar.onClose() : useSideBar.onOpen();
   };
 
-  const sidebarClasses = useSideBar.isOpen ? "w-72" : "w-20";
+  const sidebarClasses = useSideBar.isOpen ? "md:w-72" : "md:w-20";
   const sidebarHiddenClasses = useSideBar.isOpen ? "left-0" : "-left-full";
   const logoRotationClasses = useSideBar.isOpen ? "rotate-[360deg]" : "";
 
   return (
-    <div
-      className={`z-50 duration-300 transition-all ${
-        useSideBar.isOpen ? "mr-72" : "mr-20"
-      }`}>
-      <div className="md:flex hidden z-50">
-        <div
-          className={` ${sidebarClasses} bg-gray-700 z-50 h-screen p-5 pt-8 fixed top-0 left-0 duration-300`}>
-          <Image
-            width={150}
-            height={150}
-            alt=""
-            src="/images/control.png"
-            className={`absolute cursor-pointer -right-3 top-9 w-7 border-dark-purple border-2 rounded-full ${
-              !useSideBar.isOpen && "rotate-180"
-            }`}
-            onClick={toggle}
-          />
-
-          <div className="flex relative gap-x-4 items-center">
-            <Image
-              width={70}
-              height={70}
-              alt=""
-              src="/images/logo.png"
-              className={`cursor-pointer duration-500 ${logoRotationClasses}`}
-            />
-            <h1
-              className={`text-white origin-left font-medium text-xl duration-200 ${
-                !useSideBar.isOpen && "scale-0"
-              }`}>
-              Admin Panel
-            </h1>
-          </div>
-          <ul className="pt-6">
-            {Menus.map((Menu, index) => (
-              <li key={index}>
-                <Link
-                  className={`flex p-2 cursor-pointer hover:bg-light-white text-white hover:bg-gray-500 rounded-lg text-sm items-center gap-x-4 ${
-                    Menu.gap ? "mt-9" : "mt-2"
-                  } ${index === 0 && "bg-light-white"}`}
-                  href={Menu.href}>
-                  <img alt="" src={Menu.src} />
-                  <span
-                    className={`${
-                      !useSideBar.isOpen && "hidden"
-                    } origin-left duration-200`}>
-                    {Menu.title}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+    <>
+      <div className="mb-10">
+        <Image
+          width={150}
+          height={150}
+          alt=""
+          src="/images/control.png"
+          className={`absolute cursor-pointer left-5 top-5 w-7 border-dark-purple border-2 rounded-full ${
+            !useSideBar.isOpen && "rotate-180"
+          }`}
+          onClick={toggle}
+        />
       </div>
-      <div className="z-50 flex">
-        <div className="md:hidden z-50 flex h-[30px]">
-          <img
-            alt=""
-            src="/images/control.png"
-            className={`absolute cursor-pointer top-4 left-4 w-7 border-dark-purple border-2 rounded-full ${
-              !useSideBar.isOpen && "rotate-180"
-            }`}
-            onClick={toggle}
-          />
-
+      <div
+        className={`z-50 duration-300 transition-all ${
+          useSideBar.isOpen ? "md:mr-72" : "md:mr-20"
+        }`}>
+        <div className="block z-50">
           <div
-            className={` ${sidebarHiddenClasses} bg-gray-700 h-screen p-5 pt-8 w-[300px] duration-300 fixed top-0 -left-full`}>
+            className={` ${sidebarClasses} w-72 bg-gray-700 z-50 h-screen p-5 pt-8 fixed top-0 md:left-0  ${
+              useSideBar.isOpen ? "left-0" : "-left-full"
+            } duration-300`}>
             <Image
               width={150}
               height={150}
               alt=""
               src="/images/control.png"
-              className={`absolute cursor-pointer -right-3 top-9 w-7 border-dark-purple
-           border-2 rounded-full  ${!useSideBar.isOpen && "rotate-180"}`}
+              className={`absolute cursor-pointer -right-3 top-9 w-7 border-dark-purple border-2 rounded-full ${
+                !useSideBar.isOpen && "rotate-180"
+              }`}
               onClick={toggle}
             />
-            <Image
-              width={70}
-              height={70}
-              alt=""
-              src="/images/logo.png"
-              className={`cursor-pointer duration-500 ${logoRotationClasses}`}
-            />
-            <h1
-              className={`text-white origin-left font-medium text-xl duration-200 ${
-                !useSideBar.isOpen && "scale-0"
-              }`}>
-              Admin Panel
-            </h1>
+
+            <div className="flex relative gap-x-4 items-center">
+              <Image
+                width={70}
+                height={70}
+                alt=""
+                src="/images/logo.png"
+                className={`cursor-pointer duration-500 ${logoRotationClasses}`}
+              />
+              <h1
+                className={`text-white origin-left font-medium text-xl duration-200 ${
+                  !useSideBar.isOpen && "scale-0"
+                }`}>
+                Admin Panel
+              </h1>
+            </div>
             <ul className="pt-6">
               {Menus.map((Menu, index) => (
-                <li
-                  key={index}
-                  className={`flex p-2 cursor-pointer hover:bg-light-white text-white hover:bg-gray-500 rounded-lg text-sm items-center gap-x-4 ${
-                    Menu.gap ? "mt-9" : "mt-2"
-                  } ${index === 0 && "bg-light-white"}`}>
-                  <img alt="" src={Menu.src} />
-                  <span
-                    className={`${
-                      !useSideBar.isOpen && "hidden"
-                    } origin-left duration-200`}>
-                    {Menu.title}
-                  </span>
+                <li key={index}>
+                  <Link
+                    className={`flex p-2 cursor-pointer hover:bg-light-white text-white hover:bg-gray-500 rounded-lg text-sm items-center gap-x-4 ${
+                      Menu.gap ? "mt-9" : "mt-2"
+                    } ${index === 0 && "bg-light-white"}`}
+                    href={Menu.href}>
+                    <img alt="" src={Menu.src} />
+                    <span
+                      className={`${
+                        !useSideBar.isOpen && "hidden"
+                      } origin-left duration-200`}>
+                      {Menu.title}
+                    </span>
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

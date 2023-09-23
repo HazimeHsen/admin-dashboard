@@ -4,7 +4,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ClientOnly from "@/app/components/ClientOnly";
 import { Button } from "@/app/components/ui/button";
-import UserModal from "@/app/components/Modal/UserModal";
+import UserModal from "@/app/components/Modal/EditUserModal";
 import CreateModal from "@/app/components/Modal/CreateInfoModal";
 import Image from "next/image";
 import LoadingSvg from "@/app/components/Loading/Loading";
@@ -13,6 +13,7 @@ import { Input } from "@/app/components/ui/input";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import useCreateModal from "@/app/hooks/CreateModal";
+import UploadButtonPage from "@/app/components/upload-button/UploadButtonPage";
 interface FormData {
   name: string;
   email: string;
@@ -25,6 +26,13 @@ const page = () => {
   const [createLoading, setCreateLoading] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const [data, setData] = useState([]);
+  const [images, setImages] = useState<
+    {
+      fileUrl: string;
+      fileKey: string;
+    }[]
+  >([]);
+  const [loading, setLoading] = useState(() => images.length === 0 || false);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -43,9 +51,6 @@ const page = () => {
     getUsers();
   }, [isChanged]);
 
-  const [image, setImage] = useState("/images/placeholder.jpg");
-  const [savedImage, setSavedImage] = useState("/images/placeholder.jpg");
-  const [file, setFile] = useState<File>();
   const createModal = useCreateModal();
   const {
     register,
@@ -53,46 +58,17 @@ const page = () => {
     formState: { errors },
   } = useForm<FormData>();
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-
-      const imageUrl = URL.createObjectURL(selectedFile);
-
-      setImage(imageUrl);
-      setFile(selectedFile);
-    }
-  };
-
   const onSubmit = async (data: FormData) => {
     console.log(data);
     if (data) {
       try {
         setCreateLoading(true);
 
-        const getImage = async () => {
-          if (file) {
-            const imageData = new FormData();
-            imageData.set("file", file);
-
-            const res = await fetch("/api/upload", {
-              method: "POST",
-              body: imageData,
-            });
-            if (!res.ok) throw new Error(await res.text());
-            const responseData = await res.json();
-
-            return responseData.imageUrl;
-          } else {
-            return "/images/placeholder.jpg";
-          }
-        };
-        
         const response = await axios.post(`http://localhost:3000/api/users`, {
           name: data.name,
           email: data.email,
           password: data.password,
-          image: await getImage(),
+          image: images[0] ? images[0].fileUrl : "/images/placeholder.jpg",
         });
         if (response.data) {
           setIsChanged(!isChanged);
@@ -168,19 +144,13 @@ const page = () => {
           <Label htmlFor="image" className="text-right">
             Image
           </Label>
-          <Input
-            type="file"
-            id="image"
-            className="col-span-3"
-            onChange={handleImageChange}
-          />
-          <Image
-            width={100}
-            height={100}
-            src={image}
-            alt="User Image"
-            className="col-span-3 my-5 rounded-full w-[60px] h-[60px] object-contain"
-          />
+          <div className="relative my-3 w-full">
+            <UploadButtonPage
+              images={images}
+              setImages={setImages}
+              setLoading={setLoading}
+            />
+          </div>
         </div>
       </div>
       <Button

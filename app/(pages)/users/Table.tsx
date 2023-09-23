@@ -138,6 +138,7 @@ function DataTable({
             pagination
             paginationPageSize={5}
             rowHeight={45}
+            headerHeight={45}
           />
         </div>
       )}

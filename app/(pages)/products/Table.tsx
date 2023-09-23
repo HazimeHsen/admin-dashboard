@@ -1,14 +1,19 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import Image from "next/image";
 import { Product } from "@/type";
-import useSideBarModal from "@/app/hooks/useSideBar";
 import { BiEdit } from "react-icons/bi";
 import { AiTwotoneDelete } from "react-icons/ai";
-import Modal from "@/app/components/Modal/ProductModal";
 import useDeleteModal from "@/app/hooks/deleteModal";
-import useModal from "@/app/hooks/useModal";
 import LoadingSvg from "@/app/components/Loading/Loading";
+import { AgGridReact } from "ag-grid-react";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
+import { ColDef } from "ag-grid-community";
+import EditProductModal from "@/app/components/Modal/Products/EditProductModal";
+import DeleteProductModal from "@/app/components/Modal/Products/DeleteProductModal";
+import useEditModal from "@/app/hooks/editModal";
 
 function DataTable({
   data,
@@ -21,37 +26,23 @@ function DataTable({
   isChanged: boolean;
   setIsChanged: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const tableRef = useRef(null);
-  const useUserModal = useModal();
+  const useEdit = useEditModal();
   const useDelete = useDeleteModal();
-  const useSideBar = useSideBarModal();
+  const [updateModalData, setUpdateModalData] = useState<Product | null>(null);
+  const [deleteModalData, setDeleteModalData] = useState<Product | null>(null);
+  const gridRef = useRef<AgGridReact>(null); // Specify the type explicitly
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const $ = require("jquery");
-      require("datatables.net");
-      require("datatables.net-responsive");
-
-      const table = $(tableRef.current).DataTable({
-        responsive: useSideBar.isOpen ? true : false,
-      });
-
-      table.columns.adjust().responsive.recalc();
-
-      return () => {
-        table.destroy(true);
-      };
-    }
-  }, [Loading, isChanged]);
-
-  const toggle1 = () => {
-    if (useUserModal.isOpen) {
-      useUserModal.onClose();
+  const openUpdateModal = (d: Product) => {
+    setUpdateModalData(d);
+    if (useEdit.isOpen) {
+      useEdit.onClose();
     } else {
-      useUserModal.onOpen();
+      useEdit.onOpen();
     }
   };
-  const toggle2 = () => {
+
+  const openDeleteModal = (d: Product) => {
+    setDeleteModalData(d);
     if (useDelete.isOpen) {
       useDelete.onClose();
     } else {
@@ -59,110 +50,107 @@ function DataTable({
     }
   };
 
+  const columnDefs: ColDef[] = [
+    {
+      headerName: "Profile",
+      resizable: true,
+      sortable: true,
+      cellRenderer: (params: Params) => (
+        <div className="flex">
+          {params.data.images.map((image: string, index: number) => (
+            <Image
+              key={index}
+              src={image}
+              alt="no image"
+              width={40}
+              height={40}
+              className="mt-1 mx-auto w-[35px] h-[35px] object-contain"
+            />
+          ))}
+        </div>
+      ),
+    },
+    {
+      headerName: "Name",
+      resizable: true,
+      sortable: true,
+      field: "name",
+    },
+    {
+      headerName: "Category",
+      resizable: true,
+      sortable: true,
+      field: "category",
+    },
+    {
+      headerName: "Price",
+      resizable: true,
+      sortable: true,
+      field: "price",
+    },
+    {
+      headerName: "Count In Stock",
+      resizable: true,
+      sortable: true,
+      field: "countInStock",
+    },
+    {
+      headerName: "Actions",
+      floatingFilter: false,
+      filter: false,
+      sortable: false,
+      editable: false,
+      pinned: "right",
+      resizable: false,
+      rowDrag: false,
+      cellRenderer: (params: Params) => (
+        <div className="flex items-center justify-center">
+          <div className="mr-2 cursor-pointer">
+            <EditProductModal
+              data={updateModalData}
+              isChanged={isChanged}
+              setIsChanged={setIsChanged}
+              isOpen={useEdit.isOpen}
+              setIsOpen={() => openUpdateModal(params.data)}
+              icon={BiEdit}
+              title="Edit User"
+              iconInfo="text-black"
+            />
+          </div>
+          <div className="mr-2 cursor-pointer">
+            <DeleteProductModal
+              data={deleteModalData}
+              isChanged={isChanged}
+              setIsChanged={setIsChanged}
+              isOpen={useDelete.isOpen}
+              setIsOpen={() => openDeleteModal(params.data)}
+              icon={AiTwotoneDelete}
+              iconInfo={"text-red-600 hover:text-red-800"}
+              title="Delete User"
+            />
+          </div>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div
-      className={`container w-full mx-auto block px-2 transition-all duration-300 -z-10 `}>
+      className={` w-full mx-auto block h-[350px] px-2 transition-all duration-300 -z-10 `}>
       {Loading ? (
         <LoadingSvg />
       ) : (
-        <div
-          id="recipients"
-          className="p-8 mt-6 lg:mt-0 rounded overflow-auto z-0 bg-white">
-          <table
-            id="example"
-            className="stripe hover z-0 overflow-auto"
-            style={{ width: "100%", paddingTop: "1em", paddingBottom: "1em" }}
-            ref={tableRef}>
-            <thead>
-              <tr>
-                <th className="z-0" data-priority="1">
-                  Image
-                </th>
-                <th className="z-0" data-priority="2">
-                  Name
-                </th>
-                <th className="z-0" data-priority="3">
-                  Category
-                </th>
-                <th className="z-0" data-priority="4">
-                  Price
-                </th>
-                <th className="z-0" data-priority="4">
-                  CountInStock
-                </th>
-                <th className="z-0" data-priority="4">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {data &&
-                data.map((d, i) => (
-                  <tr key={i}>
-                    <td className="text-center">
-                      {" "}
-                      <Image
-                        src={
-                          d?.images[0]
-                            ? d?.images[0]
-                            : "/images/placeholder.jpg"
-                        }
-                        alt="no image"
-                        width={40}
-                        height={40}
-                        className="col-span-3 my-5 rounded-full w-[50px] h-[50px] object-contain"
-                      />
-                    </td>
-                    <td className="text-center">
-                      {" "}
-                      <div>{d.name}</div>
-                    </td>
-                    <td className="text-center">
-                      {" "}
-                      <div>{d.category}</div>
-                    </td>
-                    <td className="text-center">
-                      <div>{d.price}</div>
-                    </td>
-                    <td className="text-center">
-                      <div>{d.countInStock}</div>
-                    </td>
-                    <td className="text-center">
-                      <div className="flex items-center justify-center">
-                        <div className="mr-2 cursor-pointer">
-                          <Modal
-                            data={d}
-                            isChanged={isChanged}
-                            setIsChanged={setIsChanged}
-                            ToDelete={false}
-                            id={d.id}
-                            isOpen={useUserModal.isOpen}
-                            setIsOpen={toggle1}
-                            icon={BiEdit}
-                            title="Edit Product"
-                            iconInfo={"text-black"}
-                          />
-                        </div>
-                        <div className="mr-2 cursor-pointer">
-                          <Modal
-                            data={d}
-                            isChanged={isChanged}
-                            setIsChanged={setIsChanged}
-                            id={d.id}
-                            ToDelete
-                            isOpen={useDelete.isOpen}
-                            setIsOpen={toggle2}
-                            icon={AiTwotoneDelete}
-                            iconInfo={"text-red-600 hover:text-red-800"}
-                            title="Delete Product"
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+        <div className="ag-theme-alpine h-full max-w-[1000px] mx-auto">
+          <AgGridReact
+            ref={gridRef}
+            columnDefs={columnDefs}
+            rowData={data}
+            alwaysShowHorizontalScroll
+            className="h-full"
+            pagination
+            paginationPageSize={5}
+            rowHeight={45}
+          />
         </div>
       )}
     </div>

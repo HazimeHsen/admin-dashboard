@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Input } from "../ui/input";
+import { Input } from "../../ui/input";
 import { IconType } from "react-icons";
-import { Button } from "../ui/button";
-import { Label } from "../ui/label";
-import LoadingSvg from "../Loading/Loading";
-import Modal from "./Modal";
+import { Button } from "../../ui/button";
+import { Label } from "../../ui/label";
+import LoadingSvg from "../../Loading/Loading";
+import Modal from "../Modal";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { User } from "@/type";
-import UploadButtonPage from "../upload-button/UploadButtonPage";
-import useModal from "@/app/hooks/useModal";
+import UploadButtonPage from "../../upload-button/UploadButtonPage";
+import useModal from "@/app/hooks/editModal";
 interface FormData {
   name: string;
   email: string;
@@ -145,6 +145,7 @@ export default function EditUserModal({
             </Label>
             <div className="relative my-3 w-full">
               <UploadButtonPage
+                type="userImage"
                 images={images}
                 setImages={setImages}
                 setLoading={setLoading}

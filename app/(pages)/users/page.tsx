@@ -4,9 +4,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ClientOnly from "@/app/components/ClientOnly";
 import { Button } from "@/app/components/ui/button";
-import UserModal from "@/app/components/Modal/EditUserModal";
 import CreateModal from "@/app/components/Modal/CreateInfoModal";
-import Image from "next/image";
 import LoadingSvg from "@/app/components/Loading/Loading";
 import { Label } from "@/app/components/ui/label";
 import { Input } from "@/app/components/ui/input";
@@ -146,6 +144,7 @@ const page = () => {
           </Label>
           <div className="relative my-3 w-full">
             <UploadButtonPage
+              type="userImage"
               images={images}
               setImages={setImages}
               setLoading={setLoading}

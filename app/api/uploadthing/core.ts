@@ -31,13 +31,7 @@ export const ourFileRouter = {
 
       console.log("file url", file.url);
     }),
-  mediaPost: f({
-    image: { maxFileSize: "2MB", maxFileCount: 1 },
-  })
-    .middleware(({ req }) => auth(req))
-    .onUploadComplete((data) => console.log("file", data)),
-
-  videoAndImage: f({
+  userImage: f({
     image: {
       maxFileSize: "1MB",
       maxFileCount: 1,
@@ -47,18 +41,10 @@ export const ourFileRouter = {
     .onUploadComplete((data) => {
       console.log("upload completed", data);
     }),
-  cv: f({
-    text: {
-      maxFileCount: 1,
-      maxFileSize: "2MB",
-    },
-    pdf: {
-      maxFileCount: 1,
-      maxFileSize: "2MB",
-    },
-    blob: {
-      maxFileCount: 1,
-      maxFileSize: "2MB",
+  productImages: f({
+    image: {
+      maxFileSize: "1MB",
+      maxFileCount: 5,
     },
   })
     .middleware(() => ({}))

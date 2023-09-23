@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import LoadingSvg from "../Loading/Loading";
 import Modal from "./Modal";
-import useModal from "@/app/hooks/useModal";
+import useModal from "@/app/hooks/editModal";
 import useDeleteModal from "@/app/hooks/deleteModal";
 import axios from "axios";
 import { toast } from "react-hot-toast";

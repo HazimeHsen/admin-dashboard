@@ -1,19 +1,13 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { Input } from "@/app/components/ui/input";
 import { IconType } from "react-icons";
-import { Button } from "../ui/button";
-import { Label } from "../ui/label";
-import LoadingSvg from "../Loading/Loading";
-import Modal from "./Modal";
-import useModal from "@/app/hooks/useModal";
-import useDeleteModal from "@/app/hooks/deleteModal";
+import { Button } from "../../ui/button";
+import LoadingSvg from "../../Loading/Loading";
+import Modal from "../Modal";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import Image from "next/image";
-import { User } from "@/type";
+import { Product, User } from "@/type";
 
-export default function DeleteUserModal({
+export default function DeleteProductModal({
   data,
   isChanged,
   setIsChanged,
@@ -23,7 +17,7 @@ export default function DeleteUserModal({
   setIsOpen,
   icon: IconComponent,
 }: {
-  data: User | null;
+  data: Product | null;
   isChanged: boolean;
   setIsChanged: React.Dispatch<React.SetStateAction<boolean>>;
   isOpen: boolean;
@@ -34,11 +28,11 @@ export default function DeleteUserModal({
 }) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const userDelete = async () => {
+  const ProductDelete = async () => {
     try {
       setIsLoading(true);
       const response = await axios.delete(
-        `http://localhost:3000/api/users?id=${data?.id}`
+        `http://localhost:3000/api/product?id=${data?.id}`
       );
       if (response.data) {
         setIsChanged(!isChanged);
@@ -55,18 +49,19 @@ export default function DeleteUserModal({
   const deleteBody = (
     <div>
       <div className="text-red-600 font-semibold">
-        Are You Sure You Want To Delete This User
+        Are You Sure You Want To Delete This Product
       </div>
       <Button
         disabled={isLoading}
         className={`relative ${
           isLoading ? "disabled:cursor-not-allowed bg-red-800 " : ""
         } mt-5 bg-red-600 hover:bg-red-700 text-white w-full`}
-        onClick={userDelete}>
+        onClick={() => ProductDelete()}>
         {isLoading ? <LoadingSvg inBox /> : "Delete"}
       </Button>
     </div>
   );
+
   return (
     <div>
       <Modal

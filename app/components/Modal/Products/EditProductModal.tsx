@@ -2,42 +2,42 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/app/components/ui/input";
 import { IconType } from "react-icons";
-import { Button } from "../ui/button";
-import { Label } from "../ui/label";
-import LoadingSvg from "../Loading/Loading";
-import Modal from "./Modal";
-import useModal from "@/app/hooks/useModal";
+import { Button } from "../../ui/button";
+import { Label } from "../../ui/label";
+import LoadingSvg from "../../Loading/Loading";
+import Modal from "../Modal";
+import useModal from "@/app/hooks/editModal";
 import useDeleteModal from "@/app/hooks/deleteModal";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
 import { Product } from "@/type";
 import isErrorResponse from "@/app/CatchError/CatchError";
+import UploadButtonPage from "../../upload-button/UploadButtonPage";
 interface FormData {
   name: string;
+  discount: number;
   category: string;
+  brand: string;
+  description: string;
   price: number;
   countInStock: number;
-  images: FileList;
+  images: string[];
 }
 
-export default function ProductModal({
+export default function EditProductModal({
   data,
   isChanged,
   setIsChanged,
   title,
-  id,
-  ToDelete,
   isOpen,
   setIsOpen,
   icon: IconComponent,
   iconInfo,
 }: {
-  data: Product;
+  data: Product | null;
   isChanged: boolean;
   setIsChanged: React.Dispatch<React.SetStateAction<boolean>>;
-  id: string;
-  ToDelete: boolean;
   isOpen: boolean;
   setIsOpen: () => void;
   title: string;
@@ -45,93 +45,59 @@ export default function ProductModal({
   iconInfo: string;
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [images, setImages] = useState(data.images ?? []); // Initialize with existing images
-  const [files, setFiles] = useState<FileList>();
   const useProductModal = useModal();
   const useDelete = useDeleteModal();
+  const initialImages = data
+    ? data?.images.map((image) => {
+        return { fileUrl: image, fileKey: "some-key" };
+      })
+    : [];
+
+  const [images, setImages] = useState<
+    {
+      fileUrl: string;
+      fileKey: string;
+    }[]
+  >(initialImages);
+  const [loading, setLoading] = useState(() => images.length === 0 || false);
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<FormData>({
+    defaultValues: {
+      name: data?.name,
+      discount: data?.discount,
+      category: data?.category,
+      description: data?.description,
+      price: data?.price,
+      countInStock: data?.countInStock,
+      brand: data?.brand,
+      images: data?.images,
+    },
+  });
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const selectedFiles = e.target.files;
-
-      // Create an array of temporary URLs for the selected image files
-      const imageUrls = Array.from(selectedFiles).map((file) =>
-        URL.createObjectURL(file)
-      );
-
-      setImages(imageUrls);
-      setFiles(selectedFiles);
-    }
-  };
-
-  const ProductDelete = async (id: string) => {
-    try {
-      setIsLoading(true);
-      const response = await axios.delete(
-        `http://localhost:3000/api/product?id=${id}`
-      );
-      if (response.data) {
-        setIsChanged(!isChanged);
-        setIsLoading(false);
-        toast.success(response.data.message);
-        useDelete.onClose();
-      }
-    } catch (error) {
-      setIsLoading(false);
-      console.log(error);
-    }
-  };
-  const onSubmit = async (data: FormData) => {
-    console.log(data);
-    if (data) {
+  const onSubmit = async (d: FormData) => {
+    console.log(d);
+    if (d) {
       try {
         setIsLoading(true);
-        if (!files) return;
-
-        const newImages: string[] = [];
-
-        for (let index = 0; index < files.length; index++) {
-          const file = files[index];
-          const imageData = new FormData();
-          imageData.append(`file`, file);
-
-          const res = await fetch("/api/upload", {
-            method: "POST",
-            body: imageData,
-          });
-
-          if (!res.ok) {
-            throw new Error(await res.text());
-          }
-
-          const responseData = await res.json();
-
-          if (!responseData.path) {
-            throw new Error("Invalid response data");
-          }
-
-          const pathParts = responseData.path.split("\\");
-
-          const filename = pathParts[pathParts.length - 1];
-          newImages.push(`/images/${filename}`);
-        }
-        console.log(newImages);
-
-        setImages(newImages);
 
         const response = await axios.put(
-          `http://localhost:3000/api/product?id=${id}`,
+          `http://localhost:3000/api/product?id=${data?.id}`,
           {
-            name: data.name,
-            category: data.category,
-            price: Number(data.price),
-            countInStock: Number(data.countInStock),
-            images: newImages,
+            name: d.name,
+            category: d.category,
+            description: d.description,
+            price: Number(d.price),
+            countInStock: Number(d.countInStock),
+            brand: d.brand,
+            discount: d.discount,
+            images: images.map((image) => {
+              return image.fileUrl;
+            }),
           }
         );
 
@@ -191,6 +157,42 @@ export default function ProductModal({
           )}
         </div>
         <div className="">
+          <Label htmlFor="description" className="text-right">
+            Description
+          </Label>
+          <Input
+            type="text"
+            id="description"
+            className="col-span-3"
+            {...register("description", {
+              required: "Description is required",
+            })}
+          />
+          {errors.description && (
+            <span className="text-red-500 w-full">
+              {errors.description.message as string}
+            </span>
+          )}
+        </div>
+        <div className="">
+          <Label htmlFor="brand" className="text-right">
+            Brand
+          </Label>
+          <Input
+            type="text"
+            id="brand"
+            className="col-span-3"
+            {...register("brand", {
+              required: "Brand is required",
+            })}
+          />
+          {errors.brand && (
+            <span className="text-red-500 w-full">
+              {errors.brand.message as string}
+            </span>
+          )}
+        </div>
+        <div className="">
           <Label htmlFor="price" className="text-right">
             Price
           </Label>
@@ -207,6 +209,26 @@ export default function ProductModal({
           {errors.price && (
             <span className="text-red-500 w-full">
               {errors.price.message as string}
+            </span>
+          )}
+        </div>
+        <div className="">
+          <Label htmlFor="price" className="text-right">
+            Price
+          </Label>
+          <Input
+            type="number" // Change the input type to "number"
+            id="discount"
+            className="col-span-3"
+            {...register("discount", {
+              required: "Discount is required",
+              valueAsNumber: true, // Ensure the value is treated as a number
+              min: 0, // Add validation for minimum value if needed
+            })}
+          />
+          {errors.discount && (
+            <span className="text-red-500 w-full">
+              {errors.discount.message as string}
             </span>
           )}
         </div>
@@ -231,33 +253,19 @@ export default function ProductModal({
           )}
         </div>{" "}
         <div className="">
-          <Label htmlFor="images" className="text-right">
-            Images
-          </Label>
-          <Input
-            type="file"
-            id="images"
-            className="col-span-3"
-            multiple // Allow multiple file selection
-            onChange={handleImageChange}
-          />
-          <div className="flex flex-wrap gap-x-4">
-            {images.map((imageUrl, index) => (
-              <Image
-                key={index}
-                width={100}
-                height={100}
-                src={imageUrl}
-                alt={`Product Image ${index}`}
-                className="col-span-3 my-2 rounded-full w-[60px] h-[60px] object-contain"
+          <div className="">
+            <Label htmlFor="image" className="text-right">
+              Image
+            </Label>
+            <div className="relative my-3 w-full">
+              <UploadButtonPage
+                type="productImages"
+                images={images}
+                setImages={setImages}
+                setLoading={setLoading}
               />
-            ))}
+            </div>
           </div>
-          {errors.images && (
-            <span className="text-red-500 w-full">
-              {errors.images.message as string}
-            </span>
-          )}
         </div>
       </div>
       <Button
@@ -271,42 +279,20 @@ export default function ProductModal({
     </form>
   );
 
-  const deleteBody = (
-    <div>
-      <div className="text-red-600 font-semibold">
-        Are You Sure You Want To Delete This Product
-      </div>
-      <Button
-        disabled={isLoading}
-        className={`relative ${
-          isLoading ? "disabled:cursor-not-allowed bg-red-800 " : ""
-        } mt-5 bg-red-600 hover:bg-red-700 text-white w-full`}
-        onClick={() => ProductDelete(id)}>
-        {isLoading ? <LoadingSvg inBox /> : "Delete"}
-      </Button>
-    </div>
-  );
+  const handleCloseModal = () => {
+    reset();
+    setIsOpen();
+  };
   return (
     <div>
-      {ToDelete ? (
-        <Modal
-          icon={IconComponent}
-          iconInfo={iconInfo}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          title={title}
-          body={deleteBody}
-        />
-      ) : (
-        <Modal
-          icon={IconComponent}
-          iconInfo={iconInfo}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          title={title}
-          body={editBody}
-        />
-      )}
+      <Modal
+        icon={IconComponent}
+        isOpen={isOpen}
+        setIsOpen={handleCloseModal}
+        title={title}
+        iconInfo={iconInfo}
+        body={editBody}
+      />
     </div>
   );
 }

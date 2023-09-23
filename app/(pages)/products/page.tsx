@@ -8,11 +8,12 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Label } from "@/app/components/ui/label";
 import { Input } from "@/app/components/ui/input";
-import Image from "next/image";
 import { Button } from "@/app/components/ui/button";
 import LoadingSvg from "@/app/components/Loading/Loading";
 import CreateModal from "@/app/components/Modal/CreateInfoModal";
 import isErrorResponse from "@/app/CatchError/CatchError";
+import { Product } from "@/type";
+import UploadButtonPage from "@/app/components/upload-button/UploadButtonPage";
 
 interface FormData {
   name: string;
@@ -29,7 +30,7 @@ const page = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Product[]>([]);
 
   useEffect(() => {
     const getProducts = async () => {
@@ -48,8 +49,6 @@ const page = () => {
     getProducts();
   }, [isChanged]);
 
-  const [images, setImages] = useState<string[]>([]);
-  const [files, setFiles] = useState<FileList>();
   const createModal = useCreateModal();
   const {
     register,
@@ -57,58 +56,18 @@ const page = () => {
     formState: { errors },
   } = useForm<FormData>();
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const selectedFiles = e.target.files;
-
-      // Create an array of temporary URLs for the selected image files
-      const imageUrls = Array.from(selectedFiles).map((file) =>
-        URL.createObjectURL(file)
-      );
-
-      setImages(imageUrls);
-      setFiles(selectedFiles);
-    }
-  };
+  const [images, setImages] = useState<
+    {
+      fileUrl: string;
+      fileKey: string;
+    }[]
+  >([]);
+  const [loading, setLoading] = useState(() => images.length === 0 || false);
 
   const onSubmit = async (data: FormData) => {
     console.log(data);
     if (data) {
       try {
-        if (!files) return;
-        setCreateLoading(true);
-
-        const newImages: string[] = [];
-
-        for (let index = 0; index < files.length; index++) {
-          const file = files[index];
-          const imageData = new FormData();
-          imageData.append(`file`, file);
-
-          const res = await fetch("/api/upload", {
-            method: "POST",
-            body: imageData,
-          });
-
-          if (!res.ok) {
-            throw new Error(await res.text());
-          }
-
-          const responseData = await res.json();
-
-          if (!responseData.path) {
-            throw new Error("Invalid response data");
-          }
-
-          const pathParts = responseData.path.split("\\");
-
-          const filename = pathParts[pathParts.length - 1];
-          newImages.push(`/images/${filename}`);
-        }
-        console.log(newImages);
-
-        setImages(newImages);
-
         const response = await axios.post(`http://localhost:3000/api/product`, {
           name: data.name,
           brand: data.brand,
@@ -117,7 +76,9 @@ const page = () => {
           discount: Number(data.discount),
           price: Number(data.price),
           countInStock: Number(data.countInStock),
-          images: newImages,
+          images: images.map((image) => {
+            return image.fileUrl;
+          }),
         });
 
         if (response.data) {
@@ -270,33 +231,17 @@ const page = () => {
           )}
         </div>{" "}
         <div className="">
-          <Label htmlFor="images" className="text-right">
-            Images
+          <Label htmlFor="image" className="text-right">
+            Image
           </Label>
-          <Input
-            type="file"
-            id="images"
-            className="col-span-3"
-            multiple
-            onChange={handleImageChange}
-          />
-          <div className="flex flex-wrap gap-x-4">
-            {images.map((imageUrl, index) => (
-              <Image
-                key={index}
-                width={100}
-                height={100}
-                src={imageUrl}
-                alt={`Product Image ${index}`}
-                className="col-span-3 my-2 rounded-full w-[60px] h-[60px] object-contain"
-              />
-            ))}
+          <div className="relative my-3 w-full">
+            <UploadButtonPage
+              type="productImages"
+              images={images}
+              setImages={setImages}
+              setLoading={setLoading}
+            />
           </div>
-          {errors.images && (
-            <span className="text-red-500 w-full">
-              {errors.images.message as string}
-            </span>
-          )}
         </div>
       </div>
       <Button

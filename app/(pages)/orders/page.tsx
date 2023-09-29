@@ -17,7 +17,6 @@ interface FormData {
 
 const page = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [createLoading, setCreateLoading] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const [data, setData] = useState<Order[]>([]);
 

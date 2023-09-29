@@ -36,8 +36,8 @@ export default function EditOrderModal({
   iconInfo: string;
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [isPaid, setIsPaid] = useState(false);
-  const [isDelivered, setIsDelivered] = useState(false);
+  const [isPaid, setIsPaid] = useState(data?.isPaid);
+  const [isDelivered, setIsDelivered] = useState(data?.isDelivered);
   const useProductModal = useModal();
 
   const onSubmit = async () => {
@@ -72,6 +72,7 @@ export default function EditOrderModal({
       <div className="grid gap-1 py-4">
         <div className="py-3 flex items-center ">
           <Checkbox
+            defaultChecked={isPaid}
             onCheckedChange={(e) => {
               setIsPaid((prev) => !prev);
               console.log(isPaid);
@@ -87,6 +88,7 @@ export default function EditOrderModal({
         </div>
         <div className="">
           <Checkbox
+            defaultChecked={isDelivered}
             onClick={(e) => {
               setIsDelivered((prev) => !prev);
               console.log(isDelivered);

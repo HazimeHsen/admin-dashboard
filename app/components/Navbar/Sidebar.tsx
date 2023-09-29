@@ -7,7 +7,7 @@ const Menus = [
   { title: "Dashboard", src: "/images/Folder.png", href: "/" },
   { title: "Users", src: "/images/User.png", href: "/users", gap: true },
   { title: "Products", src: "/images/Chat.png", href: "/products" },
-  { title: "Schedule", src: "/images/Calendar.png", href: "/" },
+  { title: "Schedule", src: "/images/Calendar.png", href: "/orders" },
   { title: "Search", src: "/images/Search.png", href: "/" },
   { title: "Analytics", src: "/images/Chart.png", href: "/" },
 ];

@@ -46,7 +46,6 @@ export default function EditProductModal({
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const useProductModal = useModal();
-  const useDelete = useDeleteModal();
   const initialImages = data
     ? data?.images.map((image) => {
         return { fileUrl: image, fileKey: "some-key" };

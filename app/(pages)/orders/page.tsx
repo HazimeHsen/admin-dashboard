@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
 import isErrorResponse from "@/app/CatchError/CatchError";
-import { Order } from "@/type";
+import { Order, User } from "@/type";
 
 interface FormData {
   paid: string;
@@ -18,38 +18,47 @@ interface FormData {
 const page = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
-  const [data, setData] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [user, setUser] = useState<User[]>([]);
 
   useEffect(() => {
-    const getOrders = async () => {
+    console.log("hello");
+    const getProducts = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`http://localhost:3000/api/orders`);
-        if (response.data) {
-          setData(response.data);
+        const [ordersResponse, usersResponse] = await Promise.all([
+          axios.get("http://localhost:3000/api/orders"),
+          axios.get("http://localhost:3000/api/users"),
+        ]);
+
+        if (ordersResponse.data) {
+          setOrders(ordersResponse.data);
+        }
+        if (usersResponse.data) {
+          setUser(usersResponse.data);
         }
         setIsLoading(false);
       } catch (error) {
+        toast.error("Something went Wrong.");
+      } finally {
         setIsLoading(false);
-        console.error("Error fetching data:", error);
       }
     };
-    getOrders();
-  }, [isChanged]);
+    getProducts();
+  }, []);
 
   return (
     <ClientOnly>
       <div className={`px-3 mt-10`}>
         <div className="w-full flex items-center justify-between px-4">
-          <h1 className="my-5 text-2xl font-bold underline ">
-            Products Table:{" "}
-          </h1>
+          <h1 className="my-5 text-2xl font-bold underline ">Orders Table: </h1>
         </div>
         <DataTable
           isChanged={isChanged}
           setIsChanged={setIsChanged}
           Loading={isLoading}
-          data={data}
+          orders={orders}
+          user={user}
         />
       </div>
     </ClientOnly>

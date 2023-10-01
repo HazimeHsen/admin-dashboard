@@ -113,7 +113,7 @@ function DataTable({
               isOpen={useEdit.isOpen}
               setIsOpen={() => openUpdateModal(params.data)}
               icon={BiEdit}
-              title="Edit User"
+              title="Edit Product"
               iconInfo="text-black"
             />
           </div>
@@ -126,7 +126,7 @@ function DataTable({
               setIsOpen={() => openDeleteModal(params.data)}
               icon={AiTwotoneDelete}
               iconInfo={"text-red-600 hover:text-red-800"}
-              title="Delete User"
+              title="Delete Product"
             />
           </div>
         </div>

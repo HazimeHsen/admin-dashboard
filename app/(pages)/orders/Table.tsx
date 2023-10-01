@@ -1,7 +1,7 @@
 "use client";
 import React, { useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { Order, Product } from "@/type";
+import { Order, Product, User } from "@/type";
 import { BiEdit } from "react-icons/bi";
 import { AiTwotoneDelete } from "react-icons/ai";
 import useDeleteModal from "@/app/hooks/deleteModal";
@@ -12,17 +12,18 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { ColDef } from "ag-grid-community";
 import useEditModal from "@/app/hooks/editModal";
-import EditProductModal from "@/app/components/Modal/Orders/EditProductModal";
 import EditOrderModal from "@/app/components/Modal/Orders/EditProductModal";
 import DeleteOrderModal from "@/app/components/Modal/Orders/DeleteProductModal";
 
 function DataTable({
-  data,
+  user,
+  orders,
   Loading,
   isChanged,
   setIsChanged,
 }: {
-  data: Order[];
+  user: User[];
+  orders: Order[];
   Loading: boolean;
   isChanged: boolean;
   setIsChanged: React.Dispatch<React.SetStateAction<boolean>>;
@@ -41,7 +42,6 @@ function DataTable({
       useEdit.onOpen();
     }
   };
-
   const openDeleteModal = (d: Order) => {
     setDeleteModalData(d);
     if (useDelete.isOpen) {
@@ -59,10 +59,13 @@ function DataTable({
       field: "id",
     },
     {
-      headerName: "User Id",
+      headerName: "Username",
       resizable: true,
       sortable: true,
-      field: "userId",
+      cellRenderer: (params: Params) => {
+        const username = user.find((x) => x.id === params.data.userId).name;
+        return <div>{username}</div>;
+      },
     },
     {
       headerName: "TotalCost",
@@ -102,7 +105,7 @@ function DataTable({
               isOpen={useEdit.isOpen}
               setIsOpen={() => openUpdateModal(params.data)}
               icon={BiEdit}
-              title="Edit User"
+              title="Edit Order"
               iconInfo="text-black"
             />
           </div>
@@ -115,7 +118,7 @@ function DataTable({
               setIsOpen={() => openDeleteModal(params.data)}
               icon={AiTwotoneDelete}
               iconInfo={"text-red-600 hover:text-red-800"}
-              title="Delete User"
+              title="Delete Order"
             />
           </div>
         </div>
@@ -133,7 +136,7 @@ function DataTable({
           <AgGridReact
             ref={gridRef}
             columnDefs={columnDefs}
-            rowData={data}
+            rowData={orders}
             alwaysShowHorizontalScroll
             className="h-full"
             pagination

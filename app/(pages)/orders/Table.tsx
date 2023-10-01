@@ -63,7 +63,10 @@ function DataTable({
       resizable: true,
       sortable: true,
       cellRenderer: (params: Params) => {
-        const username = user.find((x) => x.id === params.data.userId).name;
+        const username =
+          user && user.length
+            ? user.find((x) => x.id === params.data.userId)?.name || ""
+            : "";
         return <div>{username}</div>;
       },
     },

@@ -27,8 +27,8 @@ const page = () => {
       try {
         setIsLoading(true);
         const [ordersResponse, usersResponse] = await Promise.all([
-          axios.get("http://localhost:3000/api/orders"),
-          axios.get("http://localhost:3000/api/users"),
+          axios.get("https://ecco-two.vercel.app/api/orders"),
+          axios.get("https://ecco-two.vercel.app/api/users"),
         ]);
 
         if (ordersResponse.data) {

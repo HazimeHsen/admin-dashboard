@@ -74,7 +74,7 @@ export default function EditUserModal({
         setIsLoading(true);
 
         const response = await axios.put(
-          `http://localhost:3000/api/users?id=${data?.id}`,
+          `https://ecco-two.vercel.app/api/users?id=${data?.id}`,
           {
             name: d.name,
             email: d.email,

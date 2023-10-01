@@ -45,7 +45,7 @@ export default function EditOrderModal({
       setIsLoading(true);
 
       const response = await axios.put(
-        `http://localhost:3000/api/orders?id=${data?.id}`,
+        `https://ecco-two.vercel.app/api/orders?id=${data?.id}`,
         {
           paid: isPaid,
           delivered: isDelivered,

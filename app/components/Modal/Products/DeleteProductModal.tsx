@@ -32,7 +32,7 @@ export default function DeleteProductModal({
     try {
       setIsLoading(true);
       const response = await axios.delete(
-        `http://localhost:3000/api/product?id=${data?.id}`
+        `https://ecco-two.vercel.app/api/product?id=${data?.id}`
       );
       if (response.data) {
         setIsChanged(!isChanged);

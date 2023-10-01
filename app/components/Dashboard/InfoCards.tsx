@@ -17,7 +17,7 @@ const InfoCards = () => {
   const getUsers = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`http://localhost:3000/api/users`);
+      const response = await axios.get(`https://ecco-two.vercel.app/api/users`);
       if (response.data) {
         setUserNb(response.data.length);
         setIsLoading(false);
@@ -31,7 +31,9 @@ const InfoCards = () => {
   const getProducts = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`http://localhost:3000/api/product`);
+      const response = await axios.get(
+        `https://ecco-two.vercel.app/api/product`
+      );
       if (response.data) {
         setProductNb(response.data.length);
         setIsLoading(false);
@@ -45,7 +47,9 @@ const InfoCards = () => {
   const getOrders = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`http://localhost:3000/api/orders`);
+      const response = await axios.get(
+        `https://ecco-two.vercel.app/api/orders`
+      );
       if (response.data) {
         setOrderNb(response.data.length);
         setIsLoading(false);
@@ -59,7 +63,9 @@ const InfoCards = () => {
   const getReview = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`http://localhost:3000/api/review`);
+      const response = await axios.get(
+        `https://ecco-two.vercel.app/api/review`
+      );
       if (response.data) {
         setReviewNb(response.data.length);
         setIsLoading(false);

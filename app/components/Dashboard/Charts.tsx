@@ -66,8 +66,8 @@ const ChartDemo = () => {
     const fetchData = async () => {
       try {
         const [ordersResponse, productsResponse] = await Promise.all([
-          axios.get("http://localhost:3000/api/orders"),
-          axios.get("http://localhost:3000/api/product"),
+          axios.get("https://ecco-two.vercel.app/api/orders"),
+          axios.get("https://ecco-two.vercel.app/api/product"),
         ]);
 
         setOrders(ordersResponse.data);

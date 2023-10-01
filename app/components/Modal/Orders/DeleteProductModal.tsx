@@ -32,7 +32,7 @@ export default function DeleteOrderModal({
     try {
       setIsLoading(true);
       const response = await axios.delete(
-        `http://localhost:3000/api/orders?id=${data?.id}`
+        `https://ecco-two.vercel.app/api/orders?id=${data?.id}`
       );
       console.log(response.data);
       if (response.data) {

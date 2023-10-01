@@ -36,7 +36,9 @@ const page = () => {
     const getUsers = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`http://localhost:3000/api/users`);
+        const response = await axios.get(
+          `https://ecco-two.vercel.app/api/users`
+        );
         if (response.data) {
           setData(response.data);
         }
@@ -62,12 +64,15 @@ const page = () => {
       try {
         setCreateLoading(true);
 
-        const response = await axios.post(`http://localhost:3000/api/users`, {
-          name: data.name,
-          email: data.email,
-          password: data.password,
-          image: images[0] ? images[0].fileUrl : "/images/placeholder.jpg",
-        });
+        const response = await axios.post(
+          `https://ecco-two.vercel.app/api/users`,
+          {
+            name: data.name,
+            email: data.email,
+            password: data.password,
+            image: images[0] ? images[0].fileUrl : "/images/placeholder.jpg",
+          }
+        );
         if (response.data) {
           setIsChanged(!isChanged);
           setCreateLoading(false);

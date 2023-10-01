@@ -85,7 +85,7 @@ export default function EditProductModal({
         setIsLoading(true);
 
         const response = await axios.put(
-          `http://localhost:3000/api/product?id=${data?.id}`,
+          `https://ecco-two.vercel.app/api/product?id=${data?.id}`,
           {
             name: d.name,
             category: d.category,

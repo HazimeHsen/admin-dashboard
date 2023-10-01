@@ -38,7 +38,7 @@ export default function DeleteUserModal({
     try {
       setIsLoading(true);
       const response = await axios.delete(
-        `http://localhost:3000/api/users?id=${data?.id}`
+        `https://ecco-two.vercel.app/api/users?id=${data?.id}`
       );
       if (response.data) {
         setIsChanged(!isChanged);

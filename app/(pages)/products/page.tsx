@@ -36,7 +36,9 @@ const page = () => {
     const getProducts = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`http://localhost:3000/api/product`);
+        const response = await axios.get(
+          `https://ecco-two.vercel.app/api/product`
+        );
         if (response.data) {
           setData(response.data);
         }
@@ -68,18 +70,21 @@ const page = () => {
     console.log(data);
     if (data) {
       try {
-        const response = await axios.post(`http://localhost:3000/api/product`, {
-          name: data.name,
-          brand: data.brand,
-          description: data.description,
-          category: data.category,
-          discount: Number(data.discount),
-          price: Number(data.price),
-          countInStock: Number(data.countInStock),
-          images: images.map((image) => {
-            return image.fileUrl;
-          }),
-        });
+        const response = await axios.post(
+          `https://ecco-two.vercel.app/api/product`,
+          {
+            name: data.name,
+            brand: data.brand,
+            description: data.description,
+            category: data.category,
+            discount: Number(data.discount),
+            price: Number(data.price),
+            countInStock: Number(data.countInStock),
+            images: images.map((image) => {
+              return image.fileUrl;
+            }),
+          }
+        );
 
         if (response.data) {
           setIsChanged(!isChanged);
